@@ -1,0 +1,14 @@
+
+{% extends 'layout.html' %}
+{% block content %}
+  <h2>Add patient</h2>
+  <form method="post">
+    <label>First name: <input name="first_name"></label><br>
+    <label>Last name: <input name="last_name"></label><br>
+    <label>DOB: <input name="dob" placeholder="YYYY-MM-DD"></label><br>
+    <label>Phone: <input name="phone"></label><br>
+    <label>Address: <input name="address"></label><br>
+    <label>Notes: <textarea name="notes"></textarea></label><br>
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

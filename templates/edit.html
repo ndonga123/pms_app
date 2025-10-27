@@ -1,0 +1,14 @@
+
+{% extends 'layout.html' %}
+{% block content %}
+  <h2>Edit patient</h2>
+  <form method="post">
+    <label>First name: <input name="first_name" value="{{ patient.first_name }}"></label><br>
+    <label>Last name: <input name="last_name" value="{{ patient.last_name }}"></label><br>
+    <label>DOB: <input name="dob" value="{{ patient.dob }}"></label><br>
+    <label>Phone: <input name="phone" value="{{ patient.phone }}"></label><br>
+    <label>Address: <input name="address" value="{{ patient.address }}"></label><br>
+    <label>Notes: <textarea name="notes">{{ patient.notes }}</textarea></label><br>
+    <button type="submit">Update</button>
+  </form>
+{% endblock %}

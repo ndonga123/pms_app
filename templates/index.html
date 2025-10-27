@@ -1,0 +1,28 @@
+
+{% extends 'layout.html' %}
+{% block content %}
+  <p><a class="btn" href="{{ url_for('add') }}">Add patient</a></p>
+  {% if patients %}
+    <table>
+      <thead><tr><th>#</th><th>Name</th><th>DOB</th><th>Phone</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for p in patients %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.first_name }} {{ p.last_name }}</td>
+            <td>{{ p.dob }}</td>
+            <td>{{ p.phone }}</td>
+            <td>
+              <a href="{{ url_for('edit', id=p.id) }}">Edit</a>
+              <form method="post" action="{{ url_for('delete', id=p.id) }}" style="display:inline" onsubmit="return confirm('Delete patient?');">
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No patients yet.</p>
+  {% endif %}
+{% endblock %}
