@@ -4,43 +4,46 @@ import os
 
 app = Flask(__name__)
 
-# Use SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///patients.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Use Render's writable directory (/tmp) for SQLite
+db_path = os.path.join("/tmp", "patients.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
-with app.app_context():
-    db.create_all()
 
-
-
-# Define the patient model (table)
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-    gender = db.Column(db.String(10), nullable=False)
-    condition = db.Column(db.String(200), nullable=False)
+    age = db.Column(db.Integer)
+    diagnosis = db.Column(db.String(200))
 
-# Homepage – list patients
-@app.route('/')
-def home():
+with app.app_context():
+    db.create_all()
+
+@app.route("/")
+def index():
     patients = Patient.query.all()
-    return render_template('index.html', patients=patients)
+    return render_template("index.html", patients=patients)
 
-# Add patient form
-@app.route('/add', methods=['POST'])
+@app.route("/add", methods=["POST"])
 def add_patient():
-    name = request.form['name']
-    age = request.form['age']
-    gender = request.form['gender']
-    condition = request.form['condition']
+    name = request.form.get("name")
+    age = request.form.get("age")
+    diagnosis = request.form.get("diagnosis")
 
-    new_patient = Patient(name=name, age=age, gender=gender, condition=condition)
-    db.session.add(new_patient)
-    db.session.commit()
-    return redirect(url_for('home'))
+    if name:
+        new_patient = Patient(name=name, age=age, diagnosis=diagnosis)
+        db.session.add(new_patient)
+        db.session.commit()
+    return redirect(url_for("index"))
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+@app.route("/delete/<int:id>")
+def delete_patient(id):
+    patient = Patient.query.get(id)
+    if patient:
+        db.session.delete(patient)
+        db.session.commit()
+    return redirect(url_for("index"))
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
