@@ -16,6 +16,10 @@ class Patient(db.Model):
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(10), nullable=False)
     diagnosis = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
+    contact = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+
 
 with app.app_context():
     db.create_all()
@@ -34,8 +38,11 @@ def add_patient():
         age = request.form['age']
         gender = request.form['gender']
         diagnosis = request.form['diagnosis']
+        address = request.form['address']
+        contact = request.form['contact']
+        email = request.form['email']
 
-        new_patient = Patient(name=name, age=age, gender=gender, diagnosis=diagnosis)
+        new_patient = Patient(name=name, age=age, gender=gender, diagnosis=diagnosis, address=address, contact=contact, email=email )
         db.session.add(new_patient)
         db.session.commit()
         return redirect(url_for('index'))
