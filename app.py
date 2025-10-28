@@ -1,16 +1,15 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 
 app = Flask(__name__)
 
-# Configure database (use SQLite locally and PostgreSQL on Render)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///patients.db').replace("postgres://", "postgresql://")
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///patients.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
-# Define the Patient model
+# Database model
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -18,17 +17,16 @@ class Patient(db.Model):
     gender = db.Column(db.String(10), nullable=False)
     diagnosis = db.Column(db.String(200), nullable=False)
 
-# Initialize the database safely
 with app.app_context():
     db.create_all()
 
-# Home route – view all patients
+# Home page - show all patients
 @app.route('/')
 def index():
     patients = Patient.query.all()
     return render_template('index.html', patients=patients)
 
-# Add patient route (GET + POST)
+# Add patient
 @app.route('/add', methods=['GET', 'POST'])
 def add_patient():
     if request.method == 'POST':
@@ -40,21 +38,13 @@ def add_patient():
         new_patient = Patient(name=name, age=age, gender=gender, diagnosis=diagnosis)
         db.session.add(new_patient)
         db.session.commit()
+        return redirect(url_for('index'))
 
-        return redirect('/')
     return render_template('add.html')
 
-# Delete patient route
-@app.route('/delete/<int:id>')
-def delete_patient(id):
-    patient = Patient.query.get_or_404(id)
-    db.session.delete(patient)
-    db.session.commit()
-    return redirect('/')
-
-# Update patient route
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update_patient(id):
+# Edit patient
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_patient(id):
     patient = Patient.query.get_or_404(id)
     if request.method == 'POST':
         patient.name = request.form['name']
@@ -62,10 +52,17 @@ def update_patient(id):
         patient.gender = request.form['gender']
         patient.diagnosis = request.form['diagnosis']
         db.session.commit()
-        return redirect('/')
-    return render_template('update.html', patient=patient)
+        return redirect(url_for('index'))
+    return render_template('edit.html', patient=patient)
 
-# Run the app
+# Delete patient
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_patient(id):
+    patient = Patient.query.get_or_404(id)
+    db.session.delete(patient)
+    db.session.commit()
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
