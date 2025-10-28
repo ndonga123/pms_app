@@ -15,6 +15,9 @@
             <th>Age</th>
             <th>Gender</th>
             <th>Diagnosis</th>
+            <th>Adress</th>
+            <th>contact</th>
+            <th>Email</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,6 +29,10 @@
             <td>{{ patient.age }}</td>
             <td>{{ patient.gender }}</td>
             <td>{{ patient.diagnosis }}</td>
+            <td>{{ patient.address }}</td>
+            <td>{{ patient.contactinfo }}</td>
+            <td>{{ patient.email address}}</td>
+            
             <td class="text-center">
                 <a href="{{ url_for('edit_patient', id=patient.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
                 <form action="{{ url_for('delete_patient', id=patient.id) }}" method="POST" style="display:inline;">
