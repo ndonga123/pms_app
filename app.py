@@ -51,6 +51,10 @@ def edit_patient(id):
         patient.age = request.form['age']
         patient.gender = request.form['gender']
         patient.diagnosis = request.form['diagnosis']
+        patient.address = request.form['address']
+        patient. contact = request.form['contact']
+        patient.email = request.form['email']
+       
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('edit.html', patient=patient)
