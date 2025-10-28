@@ -1,14 +1,22 @@
-
 {% extends 'layout.html' %}
 {% block content %}
-  <h2>Add patient</h2>
-  <form method="post">
-    <label>First name: <input name="first_name"></label><br>
-    <label>Last name: <input name="last_name"></label><br>
-    <label>DOB: <input name="dob" placeholder="YYYY-MM-DD"></label><br>
-    <label>Phone: <input name="phone"></label><br>
-    <label>Address: <input name="address"></label><br>
-    <label>Notes: <textarea name="notes"></textarea></label><br>
-    <button type="submit">Save</button>
-  </form>
+<h2>Add Patient</h2>
+<form method="POST" action="{{ url_for('add_patient') }}">
+  <label>Name:</label><br>
+  <input type="text" name="name" required><br><br>
+
+  <label>Age:</label><br>
+  <input type="number" name="age" required><br><br>
+
+  <label>Gender:</label><br>
+  <select name="gender" required>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+  </select><br><br>
+
+  <label>Diagnosis:</label><br>
+  <input type="text" name="diagnosis" required><br><br>
+
+  <button type="submit">Save</button>
+</form>
 {% endblock %}
