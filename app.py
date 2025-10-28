@@ -9,6 +9,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///patients.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
 
 # Define the patient model (table)
 class Patient(db.Model):
